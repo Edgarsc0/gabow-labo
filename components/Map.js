@@ -4,6 +4,8 @@ import { Icon, map } from 'leaflet';
 import L from "leaflet";
 import Head from 'next/head';
 import { ContextMenu, Theme } from '@radix-ui/themes';
+import 'leaflet-contextmenu';
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import { generarSVGConCirculoEnCentro } from '@/lib/functions/svg';
 
 const MapWithClickEvent = ({
@@ -14,7 +16,8 @@ const MapWithClickEvent = ({
     currentMarkers,
     id,
     setId,
-    setSelectedMarker
+    setSelectedMarker,
+    onCopy
 }) => {
     const mapRef = useRef();
     const mapa = mapRef.current
@@ -27,7 +30,7 @@ const MapWithClickEvent = ({
             character: String.fromCharCode(65 + id)
         });
         setId(id + 1);
-        setSelectedMarker({lat,lng})
+        setSelectedMarker({ lat, lng })
     };
     const flyTo = markerInfo => {
         const { lat, lng } = markerInfo.latlng;
@@ -46,7 +49,7 @@ const MapWithClickEvent = ({
     };
     const DesactivarResaltado = () => {
         useMapEvents({
-            click: ()=>{
+            click: () => {
                 setSelectedMarker(null)
             },
         });
@@ -62,8 +65,24 @@ const MapWithClickEvent = ({
                     crossOrigin=""
                 />
             </Head>
-            <MapContainer ref={mapRef} style={{ height: '100vh', width: '100%' }} center={[19.472819274952897, -99.14333273147834]} zoom={13}>
-                <DesactivarResaltado/>
+            <MapContainer
+                ref={mapRef}
+                style={{ height: '100vh', width: '100%' }}
+                center={[19.472819274952897, -99.14333273147834]}
+                zoom={13}
+                contextmenu={true}
+                contextmenuItems={[
+                    {
+                        text: 'Copiar coordenadas',
+                        callback: (e) => {
+                            const { lat, lng } = e.latlng;
+                            navigator.clipboard.writeText(`${lat},${lng}`);
+                            onCopy();
+                        }
+                    }
+                ]}
+            >
+                <DesactivarResaltado />
                 {waitingForPoint && (
                     <ClickEvent />
                 )}

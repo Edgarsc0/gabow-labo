@@ -85,6 +85,18 @@ const Main = () => {
     setNewMarker([]);
     closeDeleteMarkerListDialog();
   }
+  const succcessCopy = () => {
+    toast.success(`¡Coordenadas copiadas al portapapeles!`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  }
   return (
     <>
       <ToastContainer
@@ -277,6 +289,7 @@ const Main = () => {
           id={id}
           setId={setId}
           setSelectedMarker={setSelectedMarker}
+          onCopy={succcessCopy}
         />
       </div>
     </>
